@@ -5,33 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo APP</title>
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style/style.css">
 </head>
 
 <body>
     <div class="container">
         <div class="main">
-            <div class="task-form">
-                <h1>Todo APP</h1>
-                <span class="error" style="color: red;"></span>
+            <div class="todo-form">
+                <h1>TODO APP</h1>
+                <span class="error"></span>
                 <form action="#" class="task-submit">
-                    <input type="text" id="task" placeholder="Task to do">
-                    <button class>Add</button>
+                    <input type="text" id="input-task" placeholder="what you need to be done?...">
+                    <button class="add-task">Add</button>
                 </form>
             </div>
-            <div class="task-list">
+            <div class="todo-list">
                 <h1>Tasks to do: </h1>
                 <ul class="tasks">
-                    <li> hello
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span class="slider round"></span>
-                        </label></li>
+
                 </ul>
             </div>
         </div>
     </div>
-
+    <script src="moment.js"></script>
     <script src="main.js"></script>
 </body>
 

@@ -1,32 +1,85 @@
-// get input value (task)
-// watch for key enter or add button clicked
-// add the task to task to do
-
+/*
+  Helper functions
+*/
 function hideError() {
   errorElement.innerHTML = "";
 }
 
-// njibo wch kayen f local storage => string | null
-// const tasks = JSON.parse(localStorage.getItem("tasks"));
-// console.log(tasks, typeof tasks);
+function generateId() {
+  return (
+    "_" +
+    Math.random()
+      .toString(36)
+      .substr(2, 9)
+  );
+}
 
-const taskInput = document.getElementById("task");
+function showTasks(tasks) {
+  tasksList.innerHTML = "";
+  if (tasks) {
+    tasks.forEach(task => {
+      if (task.isFinished == false) {
+        const html = `
+            <li class="task" id=${task.id}>
+              <div class="task-info">
+                  <div class="task-info__text">${task.text}</div>
+                  <div class="task-info__time">${task.date}</div>
+              </div>
+              <div class="task-toggle">
+                  <label class="toggle">
+                      <input type="checkbox" class="check-input">
+                      <span class="slider"></span>
+                  </label>
+              </div>
+            </li>
+         `;
+        tasksList.innerHTML += html;
+      }
+    });
+  } else {
+    tasksList.innerHTML = "No tasks to show";
+  }
+}
+
+function updateLocalStorage(id) {
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+  tasks.forEach(task => {
+    if (task.id == id) {
+      task.isFinished = true;
+    }
+  });
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  showTasks(tasks);
+}
+
+const taskInput = document.getElementById("input-task");
 const form = document.querySelector(".task-submit");
 const tasksList = document.querySelector(".tasks");
 const errorElement = document.querySelector(".error");
+const checkbox = document.querySelector(".task-toggle");
+
+let t = [];
 
 form.addEventListener("submit", function(e) {
-  let task = taskInput.value;
+  e.preventDefault();
+  let taskTtext = taskInput.value;
+  //construct task
+  let task = {
+    id: generateId(),
+    text: taskTtext,
+    date: moment().format("MM-DD-YYYY HH:mm"),
+    isFinished: false
+  };
 
-  if (task !== "") {
+  if (taskTtext !== "") {
     e.preventDefault();
     const tasks = JSON.parse(localStorage.getItem("tasks")); //null
     if (tasks == null) {
-      let t = [];
       t.push(task);
       localStorage.setItem("tasks", JSON.stringify(t));
     } else {
-      const t = JSON.parse(localStorage.getItem("tasks")); // t = ["hello", "bb"]
+      const t = JSON.parse(localStorage.getItem("tasks"));
       t.push(task);
       localStorage.setItem("tasks", JSON.stringify(t));
     }
@@ -39,19 +92,21 @@ form.addEventListener("submit", function(e) {
 
   //update ui
   tasksList.innerHTML = "";
-  const tasks = JSON.parse(localStorage.getItem("tasks"));
 
-  tasks.forEach(task => {
-    const li = document.createElement("li");
-    li.appendChild(document.createTextNode(task));
-    tasksList.appendChild(li);
-  });
+  const tasks = JSON.parse(localStorage.getItem("tasks"));
+  showTasks(tasks);
 });
 
 const tasks = JSON.parse(localStorage.getItem("tasks"));
+showTasks(tasks);
 
-tasks.forEach(task => {
-  const li = document.createElement("li");
-  li.appendChild(document.createTextNode(task));
-  tasksList.appendChild(li);
+const tasksElement = document.querySelector(".tasks");
+tasksElement.addEventListener("click", function(e) {
+  if (e.target.tagName.toUpperCase() === "INPUT") {
+    e.target.checked = true;
+    const id = e.target.parentElement.parentElement.parentElement.id;
+    setTimeout(() => {
+      updateLocalStorage(id);
+    }, 1000);
+  }
 });
